@@ -134,3 +134,66 @@ This module focuses on validation, covering topics such as an introduction to va
   },
 
 ```
+
+## How to do custom validation
+
+- we can set max length of a schema types
+
+```ts
+// student.schema.ts
+  firstName: {
+    type: String,
+    required: [true, 'First Name is Required'],
+    maxlength: 20,
+  },
+```
+
+- We set a custom message with the max length
+
+```ts
+// student.schema.ts
+  firstName: {
+    type: String,
+    required: [true, 'First Name is Required'],
+    maxlength: [20, 'Name should be less than 20 letter']
+  },
+```
+
+- We can send the error message to client as well
+
+```ts
+//  inside student.controller.ts
+const createStudent = async (req: Request, res: Response) => {
+  try {
+    const { student: studentData } = req.body;
+
+    // will call service function to send this data
+    const result = await StudentServices.createStudentInDB(studentData);
+
+    // send response
+    res.status(200).json({
+      success: true,
+      message: 'Student Is Created Successfully',
+      data: result,
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: 'Something went wrong',
+      error: err,
+    });
+  }
+};
+```
+
+- If we want to remove the unnecessary spaces between the words we can use trim
+
+```ts
+// student.schema.ts
+  firstName: {
+    type: String,
+    required: [true, 'First Name is Required'],
+    trim: true,
+    maxlength: [20, 'First Name should not be more than 20 letter'],
+  },
+```

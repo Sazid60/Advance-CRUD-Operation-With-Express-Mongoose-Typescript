@@ -10,13 +10,17 @@ const userNameSchema = new Schema<UserName>({
   firstName: {
     type: String,
     required: [true, 'First Name is Required'],
+    trim: true,
+    maxlength: [20, 'Name can not be more than 20 char'],
   },
   middleName: {
     type: String,
+    trim: true,
   },
   lastName: {
     type: String,
     required: [true, 'Last Name is Required'],
+    trim: true,
   },
 });
 
@@ -24,10 +28,12 @@ const guardianSchema = new Schema<Guardian>({
   fatherName: {
     type: String,
     required: [true, 'Father Name is Required'],
+    trim: true,
   },
   fatherOccupation: {
     type: String,
     required: [true, 'Father Occupation Is Required'],
+    trim: true,
   },
   fatherContactNo: {
     type: String,
@@ -36,10 +42,12 @@ const guardianSchema = new Schema<Guardian>({
   motherName: {
     type: String,
     required: [true, 'Mother Name is Required'],
+    trim: true,
   },
   motherOccupation: {
     type: String,
     required: [true, 'Mother Occupation Is Required'],
+    trim: true,
   },
   motherContactNo: {
     type: String,
@@ -51,14 +59,17 @@ const localGuardianSchema = new Schema<LocalGuardian>({
   name: {
     type: String,
     required: [true, 'Local Guardian Name Required'],
+    trim: true,
   },
   occupation: {
     type: String,
     required: [true, 'Local Guardian Occupation Required'],
+    trim: true,
   },
   contactNo: {
     type: String,
     required: [true, 'Local Guardian Contact No Required'],
+    trim: true,
   },
   address: {
     type: String,
