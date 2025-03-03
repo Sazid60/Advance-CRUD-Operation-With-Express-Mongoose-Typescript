@@ -5,6 +5,7 @@ import {
   Guardian,
   LocalGuardian,
 } from './student.interface';
+import validator from 'validator';
 
 const userNameSchema = new Schema<UserName>({
   firstName: {
@@ -32,6 +33,10 @@ const userNameSchema = new Schema<UserName>({
     type: String,
     required: [true, 'Last Name is Required'],
     trim: true,
+    validate: {
+      validator: (value: string) => validator.isAlpha(value),
+      message: '{VALUE} Is not valid',
+    },
   },
 });
 
@@ -104,7 +109,15 @@ const studentSchema = new Schema<Student>({
     required: [true, 'Gender Is Required'],
   },
   dateOfBirth: { type: String },
-  email: { type: String, required: [true, 'Email Required'], unique: true },
+  email: {
+    type: String,
+    required: [true, 'Email Required'],
+    unique: true,
+    validate: {
+      validator: (value: string) => validator.isEmail(value),
+      message: '{VALUE} Is not a valid email type',
+    },
+  },
   contactNo: { type: String, required: [true, 'Contact No Required'] },
   emergencyContactNo: {
     type: String,

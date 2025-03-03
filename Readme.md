@@ -225,3 +225,51 @@ const createStudent = async (req: Request, res: Response) => {
     },
   },
 ```
+
+## How to validate using validator and Joi package
+
+- Custom made validation will take more time. so that we will use validation library
+
+### Using Npm Validator
+
+- Easiest validator npm package is [Validator Npm](https://www.npmjs.com/package/validator)
+- npm i validator
+- By default this validator does not support typescript
+- We should use npm i -D @types/validator this. [typescript enabled validator system of this npm](https://www.npmjs.com/package/@types/validator)
+- Follow the installation process [Validator npm Home page](https://github.com/validatorjs/validator.js)
+- Import inside student.schema.ts i mean in the model
+
+  ```ts
+  import validator from 'validator';
+  ```
+
+  - Validator npm in last name
+
+```ts
+    // using npm validator
+  lastName: {
+    type: String,
+    required: [true, 'Last Name is Required'],
+    validate: {
+      validator: (value: string) => validator.isAlpha(value),
+      // here normal function will work since we are not using custom validator
+      message: '{VALUE} is not valid',
+    },
+  },
+```
+
+```ts
+
+  // using npm validator
+  email: {
+    type: String,
+    required: [true, 'Email is Required'],
+    unique: true, // Email typically doesn't need trimming here
+    trim: true, // Trim for ensuring valid input
+    validate: {
+      validator: (value: string) => validator.isEmail(value),
+      message: '{VALUE} is not a email type',
+    },
+  },
+
+```
