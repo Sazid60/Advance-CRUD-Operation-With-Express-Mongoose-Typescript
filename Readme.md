@@ -197,3 +197,31 @@ const createStudent = async (req: Request, res: Response) => {
     maxlength: [20, 'First Name should not be more than 20 letter'],
   },
 ```
+
+### Custom Validator
+
+- we will use normal function because dist will not work in arrow function
+-
+
+```ts
+  firstName: {
+    type: String,
+    required: [true, 'First Name is Required'],
+    trim: true, // Names often have unwanted whitespace
+    maxlength: [20, 'First Name should not be more than 20 letters'],
+    validate: {
+      validator: function (value: string) {
+        const firstNameStr = value.charAt(0).toUpperCase() + value.slice(1);
+        // console.log(value);
+        // if (value !== firstNameStr) {
+        //   return false;
+        // }
+        // return true;
+
+        // shortcut
+        return firstNameStr === value;
+      },
+      message: '{VALUE} is not capitalized Format',
+    },
+  },
+```

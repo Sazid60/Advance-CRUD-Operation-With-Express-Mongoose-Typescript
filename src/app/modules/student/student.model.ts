@@ -12,6 +12,17 @@ const userNameSchema = new Schema<UserName>({
     required: [true, 'First Name is Required'],
     trim: true,
     maxlength: [20, 'Name can not be more than 20 char'],
+    validate: {
+      validator: function (value: string) {
+        const firstNameStr = value.charAt(0).toUpperCase() + value.slice(1);
+
+        return firstNameStr === value;
+        // if(value !== firstNameStr){
+        //   return false
+        // } return true
+      },
+      message: '{VALUE} Is Not Inj Capitalized Format',
+    },
   },
   middleName: {
     type: String,
