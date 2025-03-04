@@ -1,27 +1,27 @@
 import { Request, Response } from 'express';
 import { StudentServices } from './student.service';
-import Joi from 'joi';
+import studentValidationSchema from './student.validation';
 
 // (req: Request, res: Response) will come from express typeScript type declaration
 
 const createStudent = async (req: Request, res: Response) => {
   try {
+    //  creating a student validation using JOI
     const { student: studentData } = req.body;
 
-    // Validation using joi
-
-    const JoiValidationSchema = Joi.object({
-      id: Joi.string(),
-      name: {
-        firstName: Joi.string().max(20).required(),
-        middleName: Joi.string().max(20),
-        lastName: Joi.string().max(20).required(),
-      },
-      gender: Joi.string().required().valid(['male', 'female', 'other']),
-    });
+    const { error } = studentValidationSchema.validate(studentData);
+    // console.log({value}, {error});
 
     //  will call service function to send this data
     const result = await StudentServices.createStudentIntoDB(studentData);
+
+    if (error) {
+      res.status(500).json({
+        success: false,
+        message: 'Something Went Wrong',
+        error: error.details,
+      });
+    }
     //  send response
     res.status(200).json({
       success: true,
