@@ -273,3 +273,133 @@ const createStudent = async (req: Request, res: Response) => {
   },
 
 ```
+
+## How to validate using zod
+
+- For More Organized way we can use ZOD [ZOD Documentation](https://zod.dev/)
+
+- ZOD is Better than JOI
+- npm install zod
+- zod can infer and define typescript type
+
+```ts
+// student.validation.ts
+import { z } from 'zod';
+
+const userNameValidationSchema = z.object({
+  firstName: z
+    .string()
+    .min(1, 'First Name is Required')
+    .max(20, 'Name cannot be more than 20 characters')
+    .trim(),
+  middleName: z.string().trim().optional(),
+  lastName: z.string().min(1, 'Last Name is Required').trim(),
+});
+
+const guardianValidationSchema = z.object({
+  fatherName: z.string().min(1, 'Father Name is Required').trim(),
+  fatherOccupation: z.string().min(1, 'Father Occupation is Required').trim(),
+  fatherContactNo: z.string().min(1, 'Father Contact No Required').trim(),
+  motherName: z.string().min(1, 'Mother Name is Required').trim(),
+  motherOccupation: z.string().min(1, 'Mother Occupation is Required').trim(),
+  motherContactNo: z.string().min(1, 'Mother Contact No Required').trim(),
+});
+
+const localGuardianValidationSchema = z.object({
+  name: z.string().min(1, 'Local Guardian Name Required').trim(),
+  occupation: z.string().min(1, 'Local Guardian Occupation Required').trim(),
+  contactNo: z.string().min(1, 'Local Guardian Contact No Required').trim(),
+  address: z.string().min(1, 'Local Guardian Address Required').trim(),
+});
+
+const studentValidationSchema = z.object({
+  id: z.string().min(1, 'ID is required'),
+  name: userNameValidationSchema,
+  gender: z.enum(['male', 'female', 'other'], {
+    errorMap: () => ({ message: 'Gender is not valid' }),
+  }),
+  dateOfBirth: z.string().optional(),
+  email: z.string().email('Invalid email format'),
+  contactNo: z.string().min(1, 'Contact No Required').trim(),
+  emergencyContactNo: z.string().min(1, 'Emergency Contact No Required').trim(),
+  bloodGroup: z
+    .enum(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])
+    .optional(),
+  presentAddress: z.string().min(1, 'Present Address Required').trim(),
+  permanentAddress: z.string().min(1, 'Permanent Address Required').trim(),
+  guardian: guardianValidationSchema,
+  localGuardian: localGuardianValidationSchema,
+  profileImg: z.string().min(1, 'Profile Image Required').trim(),
+  isActive: z.enum(['active', 'blocked']).default('active'),
+});
+
+export default studentValidationSchema;
+```
+
+```ts
+import { Request, Response } from 'express';
+import { StudentServices } from './student.services';
+import studentValidationSchema from './student.validation';
+
+// import studentValidationSchema from './student.joi.validation';
+
+const createStudent = async (req: Request, res: Response) => {
+  try {
+    const { student: studentData } = req.body;
+
+    // using zod
+    const zodValidationData = await studentValidationSchema.parse(studentData);
+    // will call service function to send this data
+    const result = await StudentServices.createStudentInDB(zodValidationData);
+
+    // send response
+    res.status(200).json({
+      success: true,
+      message: 'Student Is Created Successfully',
+      data: result,
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: 'Something went wrong',
+      error: err,
+    });
+  }
+};
+
+// for getting all students
+const getAllStudents = async (req: Request, res: Response) => {
+  try {
+    const result = await StudentServices.getAllStudentsFromDB();
+    // send response
+    res.status(200).json({
+      success: true,
+      message: 'Students are retrieved successfully',
+      data: result,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+// for getting single students
+const getSingleStudent = async (req: Request, res: Response) => {
+  try {
+    const { studentId } = req.params;
+    const result = await StudentServices.getSingleStudentFromDB(studentId);
+    // send response
+    res.status(200).json({
+      success: true,
+      message: 'Students is retrieved successfully',
+      data: result,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
+export const StudentController = {
+  createStudent,
+  getAllStudents,
+  getSingleStudent,
+};
+```

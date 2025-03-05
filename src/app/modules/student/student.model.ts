@@ -5,7 +5,7 @@ import {
   Guardian,
   LocalGuardian,
 } from './student.interface';
-import validator from 'validator';
+// import validator from 'validator';
 
 const userNameSchema = new Schema<UserName>({
   firstName: {
@@ -13,17 +13,17 @@ const userNameSchema = new Schema<UserName>({
     required: [true, 'First Name is Required'],
     trim: true,
     maxlength: [20, 'Name can not be more than 20 char'],
-    validate: {
-      validator: function (value: string) {
-        const firstNameStr = value.charAt(0).toUpperCase() + value.slice(1);
+    // validate: {
+    //   validator: function (value: string) {
+    //     const firstNameStr = value.charAt(0).toUpperCase() + value.slice(1);
 
-        return firstNameStr === value;
-        // if(value !== firstNameStr){
-        //   return false
-        // } return true
-      },
-      message: '{VALUE} Is Not Inj Capitalized Format',
-    },
+    //     return firstNameStr === value;
+    //     // if(value !== firstNameStr){
+    //     //   return false
+    //     // } return true
+    //   },
+    //   message: '{VALUE} Is Not Inj Capitalized Format',
+    // },
   },
   middleName: {
     type: String,
@@ -33,10 +33,10 @@ const userNameSchema = new Schema<UserName>({
     type: String,
     required: [true, 'Last Name is Required'],
     trim: true,
-    validate: {
-      validator: (value: string) => validator.isAlpha(value),
-      message: '{VALUE} Is not valid',
-    },
+    // validate: {
+    //   validator: (value: string) => validator.isAlpha(value),
+    //   message: '{VALUE} Is not valid',
+    // },
   },
 });
 
@@ -113,10 +113,10 @@ const studentSchema = new Schema<Student>({
     type: String,
     required: [true, 'Email Required'],
     unique: true,
-    validate: {
-      validator: (value: string) => validator.isEmail(value),
-      message: '{VALUE} Is not a valid email type',
-    },
+    // validate: {
+    //   validator: (value: string) => validator.isEmail(value),
+    //   message: '{VALUE} Is not a valid email type',
+    // },
   },
   contactNo: { type: String, required: [true, 'Contact No Required'] },
   emergencyContactNo: {
